@@ -8,6 +8,9 @@ namespace AutoPlus.Entities
     public class Brands
     {
         public int Id { get; set; }
+        public string ModelTypeID { get; set; }
         public string Brand { get; set; }
+
+        
     }
 }

@@ -1,0 +1,17 @@
+﻿using AutoPlus.Interfaces;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace AutoPlus.Extensions
+{
+    public static class GazNaftaBenzin
+    {
+        public static List<SelectListItem> ConvertToSelectList<T> (this IEnumerable<T> collection, int selectedValue) where T:IProperties
+        {
+            return (from item in collection select new SelectListItem { Text = item.InjectionType, Value = item.Id.ToString(), Selected = (item.Id == selectedValue)  }).ToList();
+        }
+    }
+}

@@ -7,17 +7,12 @@
 <h1>Index</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create"asp-route-IdBrandModel="@ViewBag.IdBrandModel">Create New</a>
 </p>
 <table class="table">
     <thead>
         <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Brand)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Model)
-            </th>
+            
             <th>
                 @Html.DisplayNameFor(model => model.Description)
             </th>
@@ -48,12 +43,7 @@
     <tbody>
 @foreach (var item in Model) {
         <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Brand)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Model)
-            </td>
+            
             <td>
                 @Html.DisplayFor(modelItem => item.Description)
             </td>

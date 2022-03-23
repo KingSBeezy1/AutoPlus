@@ -7,10 +7,12 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using AutoPlus.Data;
 using AutoPlus.Entities;
+using Microsoft.AspNetCore.Authorization;
 
 namespace AutoPlus.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = "Admin")]
     public class BrandsController : Controller
     {
         private readonly ApplicationDbContext _context;

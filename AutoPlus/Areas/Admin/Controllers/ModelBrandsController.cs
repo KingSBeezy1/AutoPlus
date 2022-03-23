@@ -7,10 +7,12 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using AutoPlus.Data;
 using AutoPlus.Entities;
+using Microsoft.AspNetCore.Authorization;
 
 namespace AutoPlus.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = "Admin")]
     public class ModelBrandsController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -21,14 +23,28 @@ namespace AutoPlus.Areas.Admin.Controllers
         }
 
         // GET: Admin/ModelBrands
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int Idbrand)
         {
-            return View(await _context.ModelBrands.ToListAsync());
+            List<ModelBrands> list = await (from catItem in _context.ModelBrands
+                                            where
+       catItem.IdBrand == Idbrand
+                                            select new ModelBrands
+                                            {
+                                                Id = catItem.Id,
+                                                IdBrand = Idbrand,
+                                                Model = catItem.Model,
+                                                ModelTypes = catItem.ModelTypes
+                                            }
+                                            ).ToListAsync();
+
+
+            ViewBag.IdBrand = Idbrand;
+            return View(list);
         }
 
-        // GET: Admin/ModelBrands/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
+            // GET: Admin/ModelBrands/Details/5
+            public async Task<IActionResult> Details(int? id)
+            {
             if (id == null)
             {
                 return NotFound();
@@ -42,12 +58,16 @@ namespace AutoPlus.Areas.Admin.Controllers
             }
 
             return View(modelBrands);
-        }
+           }
 
         // GET: Admin/ModelBrands/Create
-        public IActionResult Create()
+        public IActionResult Create(int Idbrand)
         {
-            return View();
+            ModelBrands modelBrands = new ModelBrands
+            {
+                IdBrand = Idbrand
+            };
+            return View(modelBrands);
         }
 
         // POST: Admin/ModelBrands/Create
@@ -61,7 +81,7 @@ namespace AutoPlus.Areas.Admin.Controllers
             {
                 _context.Add(modelBrands);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index),new {Idbrand = modelBrands.IdBrand});
             }
             return View(modelBrands);
         }
@@ -112,7 +132,7 @@ namespace AutoPlus.Areas.Admin.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index), new { Idbrand = modelBrands.IdBrand });
             }
             return View(modelBrands);
         }
@@ -143,7 +163,7 @@ namespace AutoPlus.Areas.Admin.Controllers
             var modelBrands = await _context.ModelBrands.FindAsync(id);
             _context.ModelBrands.Remove(modelBrands);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Index), new { Idbrand = modelBrands.IdBrand });
         }
 
         private bool ModelBrandsExists(int id)

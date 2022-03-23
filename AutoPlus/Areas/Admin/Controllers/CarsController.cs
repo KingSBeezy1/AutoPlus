@@ -7,10 +7,12 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using AutoPlus.Data;
 using AutoPlus.Entities;
+using Microsoft.AspNetCore.Authorization;
 
 namespace AutoPlus.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = "Admin")]
     public class CarsController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -21,9 +23,29 @@ namespace AutoPlus.Areas.Admin.Controllers
         }
 
         // GET: Admin/Cars
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int IdbrandModel)
         {
-            return View(await _context.Category.ToListAsync());
+            List<Car> list = await (from catItem in _context.Category
+                                            where
+       catItem.IdBrandModel == IdbrandModel
+                                            select new Car
+                                            {
+                                                Id = catItem.Id,
+                                                IdBrandModel = IdbrandModel,
+                                                Description = catItem.Description,
+                                                Color = catItem.Color,
+                                                YearProduction = catItem.YearProduction,
+                                                Condition = catItem.Condition,
+                                                Injection = catItem.Injection,
+                                                HorsePowers = catItem.HorsePowers,
+                                                ThumbnailImagePath = catItem.ThumbnailImagePath,
+                                                Price = catItem.Price
+                                            }
+                                            ).ToListAsync();
+
+
+            ViewBag.IdBrandModel = IdbrandModel;
+            return View(list);
         }
 
         // GET: Admin/Cars/Details/5
@@ -45,9 +67,14 @@ namespace AutoPlus.Areas.Admin.Controllers
         }
 
         // GET: Admin/Cars/Create
-        public IActionResult Create()
+        public IActionResult Create(int IdbrandModel)
         {
-            return View();
+            Car car = new Car
+            {
+                 IdBrandModel = IdbrandModel
+            };
+            return View(car);
+            
         }
 
         // POST: Admin/Cars/Create
@@ -55,13 +82,13 @@ namespace AutoPlus.Areas.Admin.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Brand,Model,Description,YearProduction,Color,Price,Condition,Injection,HorsePowers,ThumbnailImagePath")] Car car)
+        public async Task<IActionResult> Create([Bind("Id,Description,IdBrandModel,YearProduction,Color,Price,Condition,Injection,HorsePowers,ThumbnailImagePath")] Car car)
         {
             if (ModelState.IsValid)
             {
                 _context.Add(car);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index), new { IdbrandModel = car.IdBrandModel });
             }
             return View(car);
         }
@@ -87,7 +114,7 @@ namespace AutoPlus.Areas.Admin.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Brand,Model,Description,YearProduction,Color,Price,Condition,Injection,HorsePowers,ThumbnailImagePath")] Car car)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Description,IdBrandModel,YearProduction,Color,Price,Condition,Injection,HorsePowers,ThumbnailImagePath")] Car car)
         {
             if (id != car.Id)
             {
@@ -112,7 +139,7 @@ namespace AutoPlus.Areas.Admin.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index), new { IdbrandModel = car.IdBrandModel });
             }
             return View(car);
         }
@@ -143,7 +170,7 @@ namespace AutoPlus.Areas.Admin.Controllers
             var car = await _context.Category.FindAsync(id);
             _context.Category.Remove(car);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Index), new { IdbrandModel = car.IdBrandModel });
         }
 
         private bool CarExists(int id)

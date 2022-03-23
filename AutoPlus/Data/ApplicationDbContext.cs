@@ -14,6 +14,8 @@ namespace AutoPlus.Data
     {
         
         private DateTime DateTime = DateTime.Now;
+        private DateTime TimeDate = DateTime.Now;
+
         [DataType(DataType.Date)]
        [StringLength(40)]
        [Required(ErrorMessage = "This field is Required")]
@@ -28,17 +30,18 @@ namespace AutoPlus.Data
 
         [Required(ErrorMessage = "This field is Required")]
         [StringLength(10)]
-        public string TelephoneNumber { get; set; }
-
-        [Required(ErrorMessage = "This field is Required")]
-        [StringLength(10)]
         public int EGN { get; set; }
         public DateTime CreationDate
         {
             get { return DateTime; }
             set { DateTime = value; }
         }
-        
+        public DateTime RegisterDate
+        {
+            get { return TimeDate; }
+            set { TimeDate = value; }
+        }
+
         [ForeignKey("UserId")]
         public virtual ICollection<User> UsersId { get; set; }
         
@@ -54,6 +57,6 @@ namespace AutoPlus.Data
         public DbSet<User> Userss { get; set; }
         public DbSet<AutoPlus.Entities.Brands> Brands { get; set; }
         public DbSet<AutoPlus.Entities.ModelBrands> ModelBrands { get; set; }
-        
+  
     }
 }

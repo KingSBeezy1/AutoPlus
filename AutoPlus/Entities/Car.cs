@@ -1,4 +1,6 @@
-﻿using System;
+﻿using AutoPlus.Interfaces;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -7,16 +9,12 @@ using System.Threading.Tasks;
 
 namespace AutoPlus.Entities
 {
-    public class Car
+    public class Car 
     {
-        [Key]
+       
         public int Id { get; set; }
-        [Required]
-        [StringLength(30)]
-        public string Brand { get; set; }
-        [Required]
-        [StringLength(30)]
-        public string Model { get; set; }
+        
+        public int IdBrandModel { get; set; }
         [Required]
         public string Description { get; set; }
         [Required]
@@ -30,9 +28,10 @@ namespace AutoPlus.Entities
         [Required]
         public string Injection { get; set; }
         [Required]
-        public string HorsePowers { get; set; }
+        public int HorsePowers { get; set; }
         [Required]
+        [Display(Name = "Thumbnal Image Path")]
         public string ThumbnailImagePath { get; set; }
-        
+
     }
 }
